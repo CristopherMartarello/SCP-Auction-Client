@@ -2,18 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycompany</groupId>
-<<<<<<< HEAD
-    <artifactId>AuctionServer</artifactId>
-    <version>1.0</version>
-    <packaging>jar</packaging>
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.json/json -->
-=======
     <artifactId>AuctionClient</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
     <dependencies>
->>>>>>> 2c71927ac86d8f601b26ffe2711c1595c9d63bd7
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -27,7 +19,6 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<<<<<<< HEAD
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <exec.mainClass>com.mycompany.auctionserver.AuctionServer</exec.mainClass>
@@ -44,10 +35,3 @@
         <!-- Outras configurações do build aqui -->
     </build>
 </project>
-=======
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <exec.mainClass>com.mycompany.auctionclient.AuctionClient</exec.mainClass>
-    </properties>
-</project>
->>>>>>> 2c71927ac86d8f601b26ffe2711c1595c9d63bd7
