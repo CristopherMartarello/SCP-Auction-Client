@@ -1,0 +1,52 @@
+
+package com.mycompany.auctionclient;
+
+import com.mycompany.utils.AuctionClientHelpers;
+import com.mycompany.view.AuthenticationFrame;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Scanner;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+/**
+ *
+ * @author Cristopher
+ */
+public class AuctionClient {
+    public static int multicastPort;
+    public static String multicastAddress;
+    public static MulticastSocket multicastSocket;
+    
+    // Assumindo que o cliente tenha acesso a chave pública do servidor para verificação de assinatura
+    public static final String ServerPublicKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAotfntXqe1eKG9LsERj+PUuMM4BfyHfxJe42wB4/1DDLf+32/DybXjj2/I4uLXZY68o3KKYoc1/t6ACkvD58Jcr7v8t4sbmpDjiXGg8tcCw7GBoJd0fSXF1ZQjYdc7SnHnuT1kiF0VOcVsABRD7xqd7+RZeOufQP+b1edI5L9gQQpAOG/jVN0ZgGJ1WOthbxMYsfnstoEicwYYE/XFiz0LJV9CdaZnRhY8xKYM+JHpDcyLHR5+tpToEjlOlZlB1l3+/1oOMy48JIoPp+svzCi3ISs1SpazrAjy5rO3vpevg5TBLAiQbasb+Z6yCs6v9dhJF+KxxOaKddyx/7Gj+X8uwIDAQAB";
+    public static final PublicKey ServerPublicKey = AuctionClientHelpers.decodePublicKey(ServerPublicKeyBase64);
+    
+    // Usuário 1 - Credenciais (chaves)
+    //public static final String publicKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp3NsyW3wFF66x2SuHf/YxHlFfeX1HzxyFwmBDDarxAGq0VxwLJdRv/mBeaM9k4Nru2wMCCUiWAIGmh183AYwMJU7HQTe0/aw/7AEwRxTBq8clzvRrx5RfHiPvc8pqeghDy0jx6Gl3Ky7+9NPipcwW8mVJRpYIDlQeFRi7eZvx772XpMjs0+mC0pnSJWm8ReqWi4aQFs4zjVz3E8xuWk+mGZSoo1ZsOUhP98zROl3A53GqCw/8qq0lnM7j4UlHbPiRwkRuAPx4Z591qDengKepmY5Suq7wfObZgyHlxxe+pFO45a5w1C63AzKWJh2KCUI6Zad8N0LKhHFw3URj054CQIDAQAB";
+    //public static final String privateKeyBase64 = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCnc2zJbfAUXrrHZK4d/9jEeUV95fUfPHIXCYEMNqvEAarRXHAsl1G/+YF5oz2Tg2u7bAwIJSJYAgaaHXzcBjAwlTsdBN7T9rD/sATBHFMGrxyXO9GvHlF8eI+9zymp6CEPLSPHoaXcrLv700+KlzBbyZUlGlggOVB4VGLt5m/HvvZekyOzT6YLSmdIlabxF6paLhpAWzjONXPcTzG5aT6YZlKijVmw5SE/3zNE6XcDncaoLD/yqrSWczuPhSUds+JHCRG4A/Hhnn3WoN6eAp6mZjlK6rvB85tmDIeXHF76kU7jlrnDULrcDMpYmHYoJQjplp3w3QsqEcXDdRGPTngJAgMBAAECggEALOla6K2pYjVEIF2jC53G3G9wUYOfWnjiWsZsS8PQDvqpf4ys83DEdtprPR4o0ktB1lt04KxhCTzF24kEJ5krTKSB3dckErLMJ0/k/oxjwluuLevX4gGeNmW5m92X3Z/KWiEvwwfajhTwOGslHtVNHZkz/OcTctUcfaGYhRk0qtxfyuryCM8trvWkIcf7H/y973GUgBZ5Wu08Ne/QIW9/ZFn3sqIbVtN3f5YSF7yHqZ9svUiJzWFYMBcBaMH1fdzAoeSPXdWHii/q+Zc2J5H/QREPhb1UANQTrDvrOfSdgQeElHcBk70ZYSvWxNvE157jdYk5HUnEJzkyr3vEvWraPwKBgQC5n6onLFk7quZcaaqjvBcTJo93rWi79z2xfx7SkqJVT18vu8jJvAn1gbilBqmMi857tetKzF9ga5cKn+QOH9BRXSF4SKDpgb/XOLoExXpmX08NiZfe7KtB+ozGBlYTMuBHodpzQHScx9vxJnLEU0c56Rd0vXoyjSrCcYtcieMONwKBgQDm7+/ERuvVuBGuaXFLbkUqrLv5pnEM32CTKqiXAEZmgIiaWsBtMWi6m7hancfqq3Anq0lHnNCGBW15nxs+Cmc31JZdTTTb8ZHAC6lDYVoiZsq65qzopG783jRQliiIAfZJRMkOBzN03plgKmJQj0ajv2v6VVgP8wHikA75K8mLvwKBgQCbYT6iWeo8GxuHod/3/TtniXCwolS4ewaGbL2VUK9YL/+iylMSIzhG7RZt9Xy5rFHklmxmCVuRL56Ygyz4ccMESKv6rvkbXcQDWXXFBrUluoRG9bVOIthce2mZXbZxjbXV4HMm5H54uoeufhu1oWxO2oIK84y1ghuX9knM5ZNN0wKBgHo2G5KpXYC6alD8aAJdFqlgxBF3rXf8dmUrPBC9CoSQHLpisFaYwS2P3t3FhdiAZVf440zMheWG1cp5EregVcNL807o3sJOcq1I/ogz6rkt4LdL/9EVw8554QGMlWJ0d1uK1UNhOC/u5QfpJiIv0FgzovbVV0cJeMPnLKVcMMqNAoGANeDkY/kp94Pa/gSzHgDUmGKnBPrSrdY1tkiK3f6RfM3fc53YQ9Sq8WhDvFyfSK/0g7IWLIoujh1JXowKoN9NRvlPbnCj1wK6N1s50//N1lEuqF7agv7zEWuSWMxEWmJ3PgTUDFftiRhlp3gffWA/9xN404m5aKxuKeMH/gnFY0Q=";
+    
+    // Usuário 2 - Credenciais (chaves)
+    public static final String publicKeyBase64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvux9aZJPqiDPjqWZ4CDlvf4DLKrdthcuDMsF4mC/pBl/Wb3iKVfh4ZEbvxUE7tWQrie5THUIeuyRTQm3HL8RvkwfqPS1wf4G7BgxrDJ+ll+SvA8UWWyXUBm93qF5rvR2CG8tf+GBpuz+eWEa8Qd3GvxpxETNHb6JBuYM0mld+/Nvpj4yBLt/gmyjDo2ZOMkal3YbrN91IvKJo6FmcLBk6bmtuDZAC6n7Pb+Cibx11U9yj5B7/UcHQuY9sBMB/g3aHX0q01Iuv6ddwRMPHnGpjicyrVHocAj4zAFunSN1gfCnbs7kJOug5mb0i3C+1EvnVPoGULGRPOd64XaytsQjfwIDAQAB";
+    public static final String privateKeyBase64 = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC+7H1pkk+qIM+OpZngIOW9/gMsqt22Fy4MywXiYL+kGX9ZveIpV+HhkRu/FQTu1ZCuJ7lMdQh67JFNCbccvxG+TB+o9LXB/gbsGDGsMn6WX5K8DxRZbJdQGb3eoXmu9HYIby1/4YGm7P55YRrxB3ca/GnERM0dvokG5gzSaV3782+mPjIEu3+CbKMOjZk4yRqXdhus33Ui8omjoWZwsGTpua24NkALqfs9v4KJvHXVT3KPkHv9RwdC5j2wEwH+DdodfSrTUi6/p13BEw8ecamOJzKtUehwCPjMAW6dI3WB8KduzuQk66DmZvSLcL7US+dU+gZQsZE853rhdrK2xCN/AgMBAAECggEAfDbESUElj1wVbYsUF5uPnRJ74j2wTV27WhtkUqn7RLpJ/orpb1h73xNXZ/Q252QO4x95EOM7hy4OQn7FoXA2DQbdukCrV/D7c/MxrgSUEyVPBAcTiDJ8J2L4ArYvwsHNYSNkCMUgYwfhb/rbWmEu/mGmNklE4csqv1BAm0xuFxJibbAJjSPc+eRilfxH0NjodZ2sAFHNx9gCd1rR3xzidEm1lTLadp3qaMPw5m2ntdBqogomvZfnMA8W79nAFR2KHW8O2AJZ6nsXMJJqbcyAv5TlVDP+NBRfmcRB97HXLlsSo4gglhfNUjehNLDIPmxwZD7x1gQEXL/mdyrU0a0xwQKBgQD6j8E4VVr5H+3i83isWKZ0IG4ofZQJYjS99Hg9KN8jVELpi1b+HI2feYQpXJ2AQPARjOmRSluOCNKgSqq3mFRD9sY/xdGqJajDO/4/PAT17kUFBdJH1RQbLIweoBk6G++qUtMCLTs+t0AsfU9CHVFbiw9+6RlmOBRhVK0vMkwW7wKBgQDDEVuiLNpVhn/HvZ4khrHmDnncW4Jt5Hd2aCAWee8+MMZ6BR9uQkzmosBQ0QDzRvfCNoKZhqFUvx/VQ5aqim+V3oPVjUjiklnzcQ3gnESUVL05WwXyedKh9DZIoLYJx6n45yG+UHNHKnmCLabtXgG++Zqpq4A701Z5CB0+/xI8cQKBgQDMAppvdMgiycWWoWji4zd8nB81ZrJPRZ/t/oycN5gfmu70W1jUhIknjPh3+QngsH8HuzU98E5FgpeEnecMn8IUqGxY5ofFQu57MHDeKc9cMsoNweSqSisZyRa5pN+FedOVWeSnBA8WDHz6/Hi5O0fQApT2X3Mn0Id/jEOKhyh/DwKBgFmAf2Db35naSorlL8hmnP2HqtY2jpPJfh6wC/kEHYeVbZvS+ebnOM2h40exfhQhfdB4nle+9AskXoDFsD2zoxtKq4ayeryqleci+lESokzEzMWiRApLZx+0I6wTQTMfj5eKxWrDEwGWNYZLWAoVVgvADvzGmeHZSBXkaTbcZguhAoGAMQBuQoJZFV4WbW+M5M60MUh9s8a70te72fHX2Jr7pmHod33o8d2NNd5hfT3RMM8oS5oOnoFs06RxelHUbjO06pHZUnCjtfdMq1pP59bTn+fyc1H/nZ1fpV18eXH8YiLudbbk7bNXLxD9cvuPE52uihYbq0GgGPffYF2+5ak76kw=";
+    
+    
+    public static PublicKey publicKey = AuctionClientHelpers.decodePublicKey(publicKeyBase64);
+    public static PrivateKey privateKey = AuctionClientHelpers.decodePrivateKey(privateKeyBase64);
+    public static SecretKey secretKey;
+    public static IvParameterSpec iv;
+
+    public static void main(String[] args) {
+        openAuthFrame();
+    }
+    
+    public static void openAuthFrame() {
+        AuthenticationFrame authFrame = new AuthenticationFrame();
+        authFrame.setVisible(true);
+        authFrame.setLocationRelativeTo(null);
+    }
+}
