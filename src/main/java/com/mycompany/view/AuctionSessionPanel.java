@@ -234,7 +234,7 @@ public class AuctionSessionPanel extends javax.swing.JFrame {
                 multicastSocket.receive(packet);  // Recebe a mensagem
 
                 String message = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("Mensagem recebida [CLIENT]: " + message);
+                System.out.println("[CLIENT] - Mensagem recebida do grupo: " + message);
 
                 // Chama a função para tratar a mensagem recebida
                 handleReceivedMessage(message);
@@ -273,7 +273,7 @@ public class AuctionSessionPanel extends javax.swing.JFrame {
             InetAddress group = InetAddress.getByName(AuctionClient.multicastAddress);
             DatagramPacket packet = new DatagramPacket(encryptedMessage.getBytes(), encryptedMessage.length(), group, AuctionClient.multicastPort);
             AuctionClient.multicastSocket.send(packet);
-            System.out.println("Mensagem enviada [CLIENT]: " + message);
+            System.out.println("[CLIENT] - Mensagem do cliente ao grupo multicast: " + encryptedMessage);
 
         } catch (IOException ex) {
             Logger.getLogger(AuctionSessionPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -282,6 +282,7 @@ public class AuctionSessionPanel extends javax.swing.JFrame {
 
     // Função para tratar as ações de mensagem recebida no cliente
     public void handleReceivedMessage(String message) throws Exception {
+        System.out.println("MENSAGEM RECEBIDA CLIENTE: " + message);
         if (message.contains("ENTROU")) {
             handleEnterNotification();
         } else if (message.contains("LANCE")) {
