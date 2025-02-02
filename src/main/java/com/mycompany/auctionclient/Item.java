@@ -10,7 +10,7 @@ public class Item {
     private String name;
     private double price;
     private String description;
-    private double currentBid;
+    private double currentBid = 0;
     private int currentTime = 20;
     private String currentWinner;
     private String imagePath;
@@ -28,6 +28,10 @@ public class Item {
         this.price = price;
         this.description = description;
         this.imagePath = imagePath;
+    }
+    
+    public Item() {
+        
     }
 
     public String getName() {

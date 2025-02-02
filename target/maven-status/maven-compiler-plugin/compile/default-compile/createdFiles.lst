@@ -1,15 +1,10 @@
-com\mycompany\view\StartAuction.class
 com\mycompany\auctionclient\AuctionClient.class
 com\mycompany\auctionclient\Item.class
-com\mycompany\auctionserver\User.class
 com\mycompany\view\ServerInformations.class
 com\mycompany\view\AuctionSessionPanel$1.class
 com\mycompany\auctionclient\User.class
 com\mycompany\view\AuthenticationFrame.class
-com\mycompany\view\StartAuction$1.class
-com\mycompany\auctionserver\AuctionServer.class
 com\mycompany\view\AuctionSessionPanel$ClientAction.class
-com\mycompany\utils\AuctionServerHelpers.class
 com\mycompany\view\AuctionSessionPanel.class
 com\mycompany\view\ServerInformations$1.class
 com\mycompany\view\AuctionSessionPanel$2.class
