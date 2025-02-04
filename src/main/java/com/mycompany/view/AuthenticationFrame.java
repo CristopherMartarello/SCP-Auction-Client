@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /**
@@ -58,6 +59,10 @@ public class AuthenticationFrame extends javax.swing.JFrame {
                 // Receber a resposta do servidor
                 String serverResponse = in.readUTF(); // Alinha com writeUTF do servidor
                 System.out.println("Resposta do servidor: " + serverResponse);
+                
+                if (serverResponse.contains("error")) {
+                    serverResponse = "";
+                }
 
                 return serverResponse;
             } catch (IOException ex) {
@@ -66,7 +71,7 @@ public class AuthenticationFrame extends javax.swing.JFrame {
             } catch (Exception ex) {
                 System.out.println("Erro ao processar autenticação: " + ex.getMessage());
                 statusLabel.setText("Erro ao processar autenticação: " + ex.getMessage());
-            }
+            } 
         }
         return "";
     }
@@ -80,31 +85,9 @@ public class AuthenticationFrame extends javax.swing.JFrame {
             if (!responseStr.equals("")) {
                 System.out.println(responseStr);
                 openServerInformations(user, responseStr);
-                // posso fazer uma tela que já puxa os dados descriptografados e com um botão para entrar no leilão
+            } else {
+                JOptionPane.showMessageDialog(null, "Credenciais inválidas! Por favor, verifique o cpf informado.", "Erro!", JOptionPane.ERROR_MESSAGE);
             }
-//            String responseJsonSTR = ClientCommunicationUtils.sendRequestToServer(CPF, plaintext, signatureBase64, serverIP, ServerPort);
-//            System.out.println(responseJsonSTR);
-//            //data extraction
-//            JSONObject responseJson = new JSONObject(responseJsonSTR);
-//            
-//            multicastAddress = responseJson.getString("adress");
-//            multicastPort = responseJson.getInt("port");
-//            String encodedSecretKey = responseJson.getString("secretKey");////String in base64, encoded with client public key.
-//            String text = responseJson.getString("text");
-//            String serverSignature = responseJson.getString("signature");
-//            
-//            System.out.println("multicastAdress : "+ multicastAddress);
-//            System.out.println("multicastPort : "+ multicastPort);
-//            System.out.println("encodedSecretKey : "+ encodedSecretKey);
-//            System.out.println("text : "+ text);
-//            System.out.println("serverSignature : "+ serverSignature);
-//            //authenticate server
-//            signatureBytes = Base64.getDecoder().decode(serverSignature);
-//            System.out.println(ClientCryptoUtils.verifySignature(text, signatureBytes, SERVER_PUBLIC_KEY_BYTES));
-//            //decodes the secret key
-//            String secretKeyBase64 = ClientCryptoUtils.decryptWithRSA(encodedSecretKey, privateKey);
-//            secretKey = ClientCryptoUtils.convertBase64ToSecretKey(secretKeyBase64);
-//            iv = ClientCryptoUtils.generateIvFromAESKey(secretKey);
 
         } catch (Exception ex) {
             Logger.getLogger(AuthenticationFrame.class.getName()).log(Level.SEVERE, null, ex);

@@ -68,7 +68,7 @@ public class ResultsPanel extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("RESULTADOS DO LEILÃO");
+        jLabel1.setText("Resultados do Leilão");
 
         auctionItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
